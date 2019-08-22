@@ -26,6 +26,9 @@ BUFFER_THREADS = dict()
 EVENT_THREADS = dict()
 THREADED_BUFFER_CONCEPT = True  # Use
 
+BUFFER_DICT_LIST = [defaultdict(list) for i in range(1, TOTAL_CAMERAS + 1)]
+DATA_DICT_LIST = [defaultdict(list) for i in range(1, TOTAL_CAMERAS + 1)]
+
 # UPLOAD SETTINGS
 save_dir = os.getcwd() + "/data/faces"
 
@@ -60,10 +63,10 @@ def cam(cam_num):
     # return a multipart response
     if THREADED_BUFFER_CONCEPT:
         return Response(
-            consume_buffer(int(cam_num), BUFFER_DICT, DATA_DICT, EVENT_THREADS, LOCK, buffer_size=BUFFER_SIZE),
+            consume_buffer(int(cam_num), BUFFER_DICT_LIST[int(cam_num)-1], DATA_DICT_LIST[int(cam_num)-1], EVENT_THREADS, LOCK, buffer_size=BUFFER_SIZE),
             mimetype="multipart/x-mixed-replace; boundary=frame")
 
-    return Response(consumer(int(cam_num), BUFFER_DICT, DATA_DICT, buffer_size=BUFFER_SIZE),
+    return Response(consumer(int(cam_num), BUFFER_DICT_LIST[int(cam_num)-1], DATA_DICT_LIST[int(cam_num)-1], buffer_size=BUFFER_SIZE),
                     mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
@@ -237,8 +240,8 @@ if THREADED_BUFFER_CONCEPT:
         print("Starting Consumer thread for [CAM] {}".format(cam_num))
         bt = threading.Thread(target=populate_buffer, args=[prediction_consumers[int(cam_num)],
                                                             cam_num,
-                                                            BUFFER_DICT,
-                                                            DATA_DICT,
+                                                            BUFFER_DICT_LIST[int(cam_num)-1],
+                                                            DATA_DICT_LIST[int(cam_num)-1],
                                                             EVENT_THREADS,
                                                             BUFFER_SIZE])
         BUFFER_THREADS[cam_num] = bt

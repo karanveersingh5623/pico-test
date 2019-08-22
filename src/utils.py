@@ -114,20 +114,20 @@ def consume_buffer(cam_num, buffer_dict, data_dict, event_threads, lock, buffer_
     while True:
         time.sleep(0.033)
         # Acquire sync lock, prevents deadlock and maintains consistency
-        lock.acquire()
+        #lock.acquire()
         last_frame_num = frame_number
         if len(buffer_dict[cam_num]):
 
             frame_number = heappop(buffer_dict[cam_num])
             original_frame, predicted_frame = data_dict[cam_num][frame_number]
-            lock.release()
+            #lock.release()
 
             yield (
                     b"--frame\r\n"
                     b"Content-Type: image/png\r\n\r\n" + predicted_frame + b"\r\n\r\n")
 
         else:
-            lock.release()
+            #lock.release()
             print("[CAM {}] NO STREAM AFTER FRAME {}".format(cam_num, last_frame_num))
             yield (
                     b"--frame\r\n"
