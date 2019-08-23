@@ -109,13 +109,19 @@ def publish_video(video_file):
 
     # Open file
     video = cv2.VideoCapture(video_file)
-    
+    #video.set(3, 640)
+    #video.set(4, 480)
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out = cv2.VideoWriter('output.mp4', fourcc, 60, (640, 480))
+
     print('publishing video...')
     
     framecount = 0 
 
     while(video.isOpened()):
         success, frame = video.read()
+        b = cv2.resize(frame, (640, 480), fx=0, fy=0, interpolation = cv2.INTER_CUBIC)
+        out.write(b)
 
         # Ensure file was read successfully
         if not success:
@@ -123,7 +129,7 @@ def publish_video(video_file):
             break
         
         # Convert image to png
-        ret, buffer = cv2.imencode('.jpg', frame)
+        ret, buffer = cv2.imencode('.jpg', b)
         
         utc_dt = pytz.utc.localize(datetime.datetime.now())
         now_ts_utc = (utc_dt - datetime.datetime(1970, 1, 1, tzinfo=pytz.utc)).total_seconds()
@@ -141,10 +147,12 @@ def publish_video(video_file):
         producer.send(topic, camera_data)
 
         framecount = framecount + 1
-        time.sleep(0.2)
+        time.sleep(0.02)
     video.release()
+    out.release()
+    cv2.destroyAllWindows()
     print('publish complete')
 
 
 if __name__ == "__main__":
-    publish_video()
+    publish_video("1.mp4")
