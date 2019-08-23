@@ -27,7 +27,7 @@ EVENT_THREADS = dict()
 THREADED_BUFFER_CONCEPT = True  # Use
 
 BUFFER_DICT_LIST = [defaultdict(list) for i in range(1, TOTAL_CAMERAS + 1)]
-DATA_DICT_LIST = [defaultdict(list) for i in range(1, TOTAL_CAMERAS + 1)]
+DATA_DICT_LIST = [defaultdict(dict) for i in range(1, TOTAL_CAMERAS + 1)]
 
 # UPLOAD SETTINGS
 save_dir = os.getcwd() + "/data/faces"
