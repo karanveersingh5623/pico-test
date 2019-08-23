@@ -35,7 +35,7 @@ import io
 
 # Fire up the Kafka Consumer
 topic = "image-pool"
-brokers = ["35.221.215.135:9092"]
+brokers = ["kafka1-kafka-brokers:9092"]
 
 consumer = KafkaConsumer(
     topic, 
